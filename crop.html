@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harvest Price Predictor Pro</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: #eef3f8;
+    }
+
+    header {
+      background: #1b5e20;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header img {
+      width: 60px;
+      margin: 5px;
+    }
+
+    nav {
+      background: #2e7d32;
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    section {
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 700px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1b5e20;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #1b5e20;
+      color: white;
+    }
+
+    /* Farmer celebration */
+    #celebration {
+      display: none;
+      text-align: center;
+      font-size: 40px;
+      animation: dance 1s infinite alternate;
+    }
+
+    @keyframes dance {
+      from {
+        transform: rotate(-5deg) scale(1);
+      }
+
+      to {
+        transform: rotate(5deg) scale(1.1);
+      }
+    }
+
+    footer p {
+      margin: - 5px;
+      font-size: -14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🌾 Harvest Price Predictor 🌾</h1>
+    <p>Smart Crop Prediction with Trends</p>
+    <div>
+      <img src="https://cdn-icons-png.flaticon.com/512/2909/2909764.png">
+      <img src="https://cdn-icons-png.flaticon.com/512/766/766186.png">
+      <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png">
+    </div>
+  </header>
+
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#predict">Predict</a>
+    <a href="#graph">Graph</a>
+    <a href="#about">About</a>
+  </nav>
+
+  <section id="predict">
+    <div class="card">
+      <h2>Price Prediction</h2>
+
+      <label>Crop Type</label>
+      <select id="crop">
+        <option value="">Choose crop</option>
+        <option>Wheat</option>
+        <option>Rice</option>
+        <option>Maize</option>
+        <option>Cotton</option>
+        <option>Sugarcane</option>
+        <option>Barley</option>
+      </select>
+
+      <label>Quantity (kg)</label>
+      <input type="number" id="quantity">
+
+      <label>Market Demand (1-10)</label>
+      <input type="number" id="demand" min="1" max="10">
+
+      <button onclick="predictPrice()">Predict</button>
+
+      <h3 id="result"></h3>
+      <div id="celebration">👨‍🌾💃🕺🎉🌽 CONGRATS YOU GOT IT!</div>
+
+    </div>
+  </section>
+
+  <section id="graph">
+    <div class="card">
+      <h2>Price Trend</h2>
+      <canvas id="chart"></canvas>
+    </div>
+
+  </section>
+  <section id="about">
+    <div class="card">
+      <h2>About Project</h2>
+      <p>This project simulates a machine learning-based crop price predictor.
+         It considers crop type, quantity, and
+        demand to estimate prices.</p>
+    </div>
+  </section>
+  <footer>
+    <p>© 2026 Advanced Harvest Predictor</p>
+  </footer>
+  <script>
+    let chart;
+
+    // Simulated current prices (₹ per kg)
+    function getCurrentPrice(crop) {
+      let market = {
+        Wheat: 26 + Math.random() * 2,
+        Rice: 35 + Math.random() * 10,
+        Maize: 20 + Math.random() * 3,
+        Cotton: 75 + Math.random() * 10,
+        Sugarcane: 3.5 + Math.random() * 0.5,
+        Barley: 23 + Math.random() * 3
+      };
+      return market[crop];
+    }
+
+    function predictPrice() {
+      let crop = document.getElementById("crop").value;
+      let quantity = parseFloat(document.getElementById("quantity").value);
+      let demand = parseFloat(document.getElementById("demand").value);
+
+      if (!crop || !quantity || !demand) {
+        alert("Fill all fields properly");
+        return;
+      }
+
+      let currentPrice = getCurrentPrice(crop);
+
+      // Advanced logic
+      let trendFactor = 1 + (Math.random() * 0.1); // random trend
+      let demandFactor = 1 + demand / 10;
+
+      let predicted = currentPrice * trendFactor * demandFactor * quantity;
+
+      document.getElementById("result").innerText =
+        `Current Price: ₹${currentPrice.toFixed(2)} /kg 
+Predicted Total: ₹${predicted.toFixed(2)}`;
+
+      // Show celebration
+      document.getElementById("celebration").style.display = "block";
+
+      generateGraph(currentPrice, demand);
+    }
+
+    function generateGraph(basePrice, demand) {
+      let labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+
+      let data = labels.map((_, i) =>
+        basePrice * (1 + (demand + i) / 20 + Math.random() * 0.05)
+      );
+
+      if (chart) chart.destroy();
+
+      chart = new Chart(document.getElementById("chart"), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Price Trend',
+            data: data,
+            borderColor: 'green',
+            fill: false,
+          
+          }]
+        }
+      });
+    }
+  </script>
+
+</body>
+
+</html>
